@@ -7,7 +7,7 @@ else
 fi
 for IP in $(netstat -ntu | grep ":80" | awk '{print $5}'| cut -d: -f1 | sort | uniq -c | sort -n | grep -v 127.0.0.1 | awk -v connlimit=$CONNLIMIT '{if ($1 > connlimit) print $2;}')
 do
-    if grep -Fxq "$IP" banned.txt
+    if iptables --list -n | grep DROP | awk '{print $4}' | grep -q "$IP"
     then
         echo "$IP already banned"
     else
